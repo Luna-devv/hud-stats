@@ -3,17 +3,13 @@ package nl.lunish.hudstatsmod;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.game.ClientboundAwardStatsPacket;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.slf4j.Logger;
 
 @Mod(HUDStatsMod.MOD_ID)
@@ -62,7 +58,7 @@ public class HUDStatsMod {
         String playTime = "";
 
         if (days > 0) {
-            playTime += String.format("%1d day%s", days, days == 1 ? "day" : "days");
+            playTime += String.format("%1d day%s", days, days == 1 ? ", " : "s, ");
         }
 
         playTime += String.format("%02d:%02d:%02d", hours, minutes, seconds);
