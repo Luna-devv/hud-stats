@@ -51,13 +51,14 @@ public class HUDStatsMod {
             return;
         }
 
+        if (mc.isPaused()) return;
         playTimeTicks++;
     }
 
     @SubscribeEvent
     public void renderGameOverlayEvent(RenderGuiLayerEvent.Post event) {
         final var mc = Minecraft.getInstance();
-        if (mc.player == null) return;
+        if (mc.player == null || mc.getDebugOverlay().showDebugScreen() || mc.options.hideGui) return;
 
         int seconds = playTimeTicks / 20;
         int minutes = seconds / 60;
