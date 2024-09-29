@@ -2,7 +2,6 @@ package nl.lunish.hudstatsmod;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.stats.Stats;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -33,14 +32,14 @@ public class HUDStatsMod {
 
     @SubscribeEvent
     public void onTick(ClientTickEvent.Pre event) {
-        Minecraft mc = Minecraft.getInstance();
+        final var mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
         if (!requestedStats) {
-            ClientPacketListener connection = mc.getConnection();
+            final var connection = mc.getConnection();
             if (connection == null) return;
 
-            ServerboundClientCommandPacket statsRequestPacket = new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS);
+            final var statsRequestPacket = new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS);
             connection.send(statsRequestPacket);
 
             requestedStats = true;
@@ -69,7 +68,7 @@ public class HUDStatsMod {
         minutes = minutes % 60;
         hours = hours % 24;
 
-        var gui = event.getGuiGraphics();
+        final var gui = event.getGuiGraphics();
 
         String playTime = "";
 
