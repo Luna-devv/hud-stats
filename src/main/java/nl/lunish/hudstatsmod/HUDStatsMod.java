@@ -10,6 +10,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.slf4j.Logger;
 
 @Mod(HUDStatsMod.MOD_ID)
@@ -18,20 +19,34 @@ public class HUDStatsMod {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private int playTimeTicks = 0;
+    private boolean requestedStats = false;
 
     public HUDStatsMod() {
         NeoForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
+    public void onWorldJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        playTimeTicks = 0;
+        requestedStats = false;
+    }
+
+    @SubscribeEvent
     public void onTick(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
-        ClientPacketListener connection = mc.getConnection();
-        if (mc.player == null || mc.level == null || connection == null) return;
+        if (mc.player == null) return;
 
-        if (playTimeTicks == 0) {
+        if (!requestedStats) {
+            ClientPacketListener connection = mc.getConnection();
+            if (connection == null) return;
+
             ServerboundClientCommandPacket statsRequestPacket = new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.REQUEST_STATS);
             connection.send(statsRequestPacket);
+
+            requestedStats = true;
+        }
+
+        if (playTimeTicks == 0) {
             playTimeTicks = mc.player.getStats().getValue(Stats.CUSTOM.get(Stats.PLAY_TIME));
             return;
         }
