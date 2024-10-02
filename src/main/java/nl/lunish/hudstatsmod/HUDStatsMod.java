@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 public class HUDStatsMod {
     public static final String MOD_ID = "lunashudstats";
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Utils UTILS = new Utils();
+    private static final Render RENDER = new Render();
 
     private int playTimeTicks = 0;
     private boolean requestedStats = false;
@@ -59,26 +61,10 @@ public class HUDStatsMod {
         final var mc = Minecraft.getInstance();
         if (mc.player == null || mc.getDebugOverlay().showDebugScreen() || mc.options.hideGui) return;
 
-        int seconds = playTimeTicks / 20;
-        int minutes = seconds / 60;
-        int hours = minutes / 60;
-        int days = hours / 24;
-
-        seconds = seconds % 60;
-        minutes = minutes % 60;
-        hours = hours % 24;
-
         final var gui = event.getGuiGraphics();
 
-        String playTime = "";
-
-        if (days > 0) {
-            playTime += String.format("%1d day%s", days, days == 1 ? ", " : "s, ");
-        }
-
-        playTime += String.format("%02d:%02d:%02d", hours, minutes, seconds);
-
-        gui.drawString(mc.font, "Playtime: " + playTime, 10, 10, 0xffffff);
+        final var playtime = UTILS.ticksToHumanTime(playTimeTicks);
+        RENDER.drawGui(gui, playtime);
     }
 
 }
